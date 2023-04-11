@@ -1,8 +1,6 @@
 import os
 import qbittorrentapi
-import json
 import re
-from dotenv import load_dotenv
 
 from telegram import Update
 from telegram.ext import ContextTypes
@@ -12,9 +10,6 @@ from models.Message import Message
 from models.Torrent import Torrent
 
 
-load_dotenv()
-
-
 QBT_CLIENT = qbittorrentapi.Client(
         host=os.getenv('QBIT_HOST'),
         port=os.getenv('QBIT_PORT'),
@@ -22,7 +17,7 @@ QBT_CLIENT = qbittorrentapi.Client(
         password=os.getenv('QBIT_PASS'),
     )
 
-ADMINS = json.loads(str(os.getenv('ADMINS')))
+ADMINS = os.getenv('ADMINS').split(',')
 
 # DICTIONARY TO STORE THE LAST MESSAGE OF THE USERS
 # USING THE USER ID AS KEY
@@ -40,12 +35,12 @@ async def show_downloading_torrents(update: Update, context: ContextTypes.DEFAUL
     torrents_info = QBT_CLIENT.torrents_info()
     
     # Filter the torrents that are not downloading (independently of the state)
-    torrents_info_downloading = filter(lambda torrent: torrent['amount_left'] > 0, torrents_info)
+    torrents_info_downloading = filter(lambda torrent: torrent['progress'] < 1, torrents_info)
     await show_torrents(update, torrents_info_downloading)
     
 async def show_torrents(update: Update, torrents_info) -> None:
     """Create the keyboard object with the torrent hash as key and name as value"""
-    torrents_data = {torrent['hash']: format_name(torrent['name']) for torrent in torrents_info}
+    torrents_data = {torrent['hash']: format_name(torrent) for torrent in torrents_info}
     reply_markup = keyboard.create_keyboard(torrents_data, type="TORRENT")
     
     if len(torrents_data) == 0:
@@ -80,13 +75,19 @@ async def download_magnet_when_category_selected(callBackQuery, category:str, up
     await callBackQuery.edit_message_text(f'Torrent added to category {category}')
     
 
-def format_name(name, max_length=50):
+def format_name(torrent, max_length=30):
     """
         removes the content between parentheses and square brackets 
         and returns the first max_length characters
     """
-    clean_name = re.sub(r'\([^()]*\)|\[[^][]*\]', '', name).strip()
+    clean_name = re.sub(r'\([^()]*\)|\[[^][]*\]', '', torrent['name']).strip()
     
-    return clean_name[:max_length] + '...' if len(clean_name) > max_length else clean_name
+    clean_name = clean_name[:max_length] + '...' if len(clean_name) > max_length else clean_name
+    
+    porcentage = torrent['progress']*100
+    
+    #TODO: add the status message with a emoji
+    
+    return f'{clean_name} - {porcentage}%'
 
     
