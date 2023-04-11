@@ -11,16 +11,13 @@ logging.basicConfig(
     level=logging.INFO
 )
 
-if __name__ == '__main__':
-    os.system('cls' if os.name == 'nt' else 'clear')  # clear console
-    
+if __name__ == '__main__':    
     # Qbittorrent
     try:
         QBT_CLIENT.auth_log_in()
         logging.info('Qbittorrent connection successful')
     except qbittorrentapi.LoginFailed as e:
         logging.error('Qbittorrent connection failed' + str(e))
-
 
     # Telegram
     try:
