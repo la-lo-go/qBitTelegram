@@ -6,7 +6,7 @@ ENV QBIT_PORT=XXXX
 ENV QBIT_USERAME=username
 ENV QBIT_PASS=password
 ENV TELEGRAM_TOKEN=XXXXX:XXXXX-XXXXXXXXXXX
-ENV ADMINS='["usernam_admin1", "usernam_admin2"]'
+ENV ADMINS="usernam_admin1,usernam_admin2"
 
 # install dependencies
 COPY requirements.txt requirements.txt
@@ -16,7 +16,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 WORKDIR /src
 
 # Copy the source code from the working directory 
-COPY . .
+COPY /src .
 
 # Run the application
-CMD [“python”, “./main.py”] 
+CMD ["python", "/src/main.py"] 
