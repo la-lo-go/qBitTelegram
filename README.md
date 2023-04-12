@@ -1,9 +1,11 @@
 <div align="center" >
 <img src="./docs/logo-long.svg" align="center" width="60%"/>
+
+</br>
+</br>
+<strong> Manage your torrent server from anywhere via Telegram </strong>
 </div>
-<h2 align="center" >
-Manage your torrent server from anywhere via Telegram.
-</h2>
+
 
 ## Features
 - Torrents:
