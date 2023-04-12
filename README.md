@@ -1,5 +1,9 @@
-# qBitTelegram
+<div align="center" >
+<img src="./docs/logo-long.svg" align="center" width="60%"/>
+</div>
+<h2 align="center" >
 Manage your torrent server from anywhere via Telegram.
+</h2>
 
 ## Features
 - Torrents:
