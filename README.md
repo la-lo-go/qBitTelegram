@@ -1,9 +1,24 @@
 # qBitTelegram
 Manage your torrent server from anywhere via Telegram.
 
+## Features
+- Torrents:
+   - [X] Add torrent via magnet with a category.
+   - [ ] Delete a torrent.
+   - [ ] Resume.
+- Categories
+   - [X] List all categories.
+   - [X] View all torrents.
+   - [X] View all downloading torrents.
+   - [ ] Add a category.
+   - [ ] Edit a category.
+- Search:
+   - [ ] Search torrents with search plugings.
+   - [ ] Download from search.
+
 ## Prerequisites
 1. The telegram bot token ([here](https://core.telegram.org/bots#how-do-i-create-a-bot) is a tutorial)
-2. [Docker](https://www.docker.com/) installed and running on the server
+2. [Docker](https://www.docker.com/) installed and running on the server.
 
 ## Deploy
 ### Clone the repository
@@ -31,28 +46,12 @@ docker run --name qBitTelegram qbittelegram
 ```
 
 ### Add the commands to menu
-1. Go to the [_BotFather_](https://t.me/botfather) chat 
-2. Send the command `/setcommands`
-3. Choose the bot 
-4. Write 
+1. Go to the [_BotFather_](https://t.me/botfather) chat.
+2. Send the command `/setcommands`.
+3. Choose the bot.
+4. Write:
    ```
     torrents - All torrents
     torrents_downloading - Downloading torrents 
     categories - List of categories
    ```
-
-## Features
-- Torrents:
-   - [X] Add torrent via magnet with a category.
-   - [ ] Delete a torrent.
-   - [ ] Resume
-- Categories
-   - [X] List all categories.
-   - [X] View all torrents
-   - [X] View all downloading torrents
-   - [ ] Add a category.
-   - [ ] Edit a category
-- Search:
-   - [ ] Search torrents with search plugings
-   - [ ] Download from search
-  
