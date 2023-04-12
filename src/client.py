@@ -1,7 +1,7 @@
 import os
-import qbittorrentapi
 import re
 
+import qbittorrentapi
 from telegram import Update
 from telegram.ext import ContextTypes
 
@@ -27,7 +27,7 @@ async def show_all_torrents(update: Update, context: ContextTypes.DEFAULT_TYPE) 
     """Get all torrents torrents and show them in a keyboard dialog"""
     
     torrents_info = QBT_CLIENT.torrents_info()
-    await show_torrents(update, torrents_info)
+    await show_torrents_info(update, torrents_info)
         
 async def show_downloading_torrents(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Get downloading torrents and show them in a keyboard dialog"""
@@ -36,9 +36,9 @@ async def show_downloading_torrents(update: Update, context: ContextTypes.DEFAUL
     
     # Filter the torrents that are not downloading (independently of the state)
     torrents_info_downloading = filter(lambda torrent: torrent['progress'] < 1, torrents_info)
-    await show_torrents(update, torrents_info_downloading)
+    await show_torrents_info(update, torrents_info_downloading)
     
-async def show_torrents(update: Update, torrents_info) -> None:
+async def show_torrents_info(update: Update, torrents_info) -> None:
     """Create the keyboard object with the torrent hash as key and name as value"""
     torrents_data = {torrent['hash']: format_name(torrent) for torrent in torrents_info}
     reply_markup = keyboard.create_keyboard(torrents_data, type="TORRENT")
@@ -48,8 +48,8 @@ async def show_torrents(update: Update, torrents_info) -> None:
     else:
         await update.message.reply_text("Select an torrent:", reply_markup=reply_markup)
     
-    
 async def show_categories(update: Update, download_torrent=False) -> None:
+    """Show all the categories whith their path."""
     categories = QBT_CLIENT.torrents_categories()
     categories_data = {key: value['savePath'] for key, value in categories.items()}
     
@@ -61,13 +61,19 @@ async def show_categories(update: Update, download_torrent=False) -> None:
     
     await update.message.reply_text("Select a category:", reply_markup=reply_markup)
     
-async def manage_magnet(update: Update):
+async def manage_magnet(update: Update) -> None:
+    """
+    Trigged when a new magnet link is received it updates the
+    MESSAGES dictionary with the data and the user id. 
+    At the end it shows all the categories.
+    """
     await update.message.reply_text('Magnet link detected')
     torrentObj = Torrent(update.message.text)
     MESSAGES[update.effective_chat.id] = Message("TORRENT", torrentObj)
     await show_categories(update, True)
     
-async def download_magnet_when_category_selected(callBackQuery, category:str, update: Update):
+async def download_magnet_when_category_selected(callBackQuery, category:str, update: Update) -> None:
+    """Download the torrent when a category is selected after sending the magnet"""
     torrent = MESSAGES[update.effective_chat.id].data
     torrent.category = category
     QBT_CLIENT.torrents_add(urls=torrent.magnet, category=category)
@@ -75,16 +81,16 @@ async def download_magnet_when_category_selected(callBackQuery, category:str, up
     await callBackQuery.edit_message_text(f'Torrent added to category {category}')
     
 
-def format_name(torrent, max_length=30):
+def format_name(torrent, max_length=30) -> str:
     """
-        removes the content between parentheses and square brackets 
-        and returns the first max_length characters
+    Removes the content between parentheses and square brackets,
+    returns the first max_length characters and the porcentage
     """
     clean_name = re.sub(r'\([^()]*\)|\[[^][]*\]', '', torrent['name']).strip()
     
     clean_name = clean_name[:max_length] + '...' if len(clean_name) > max_length else clean_name
     
-    porcentage = torrent['progress']*100
+    porcentage = round(torrent['progress']*100, 1)
     
     #TODO: add the status message with a emoji
     

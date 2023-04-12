@@ -1,12 +1,13 @@
 FROM python:3.12.0a7-slim-bullseye
 
-# Set the environment variables
+# Optionaly you can change here the values of the environment
+# variables (read the README file for more information)
 ENV QBIT_HOST=XXX.XXX.X.XXX
 ENV QBIT_PORT=XXXX
-ENV QBIT_USERAME=username
-ENV QBIT_PASS=password
+ENV QBIT_USERAME=admin
+ENV QBIT_PASS=admin
 ENV TELEGRAM_TOKEN=XXXXX:XXXXX-XXXXXXXXXXX
-ENV ADMINS="usernam_admin1,usernam_admin2"
+ENV ADMINS=username_admin1,username_admin2
 
 # install dependencies
 COPY requirements.txt requirements.txt
