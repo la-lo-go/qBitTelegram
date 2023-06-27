@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  qbittelegram:
+    container_name: qBitTelegram
+    build: . # comment this line and uncomment the image line to use the local image
+    # image: lalogo/qbittelegram:latest # uncomment this line to use the local image (comment the build line)
+    environment:
+      - QBIT_HOST=127.0.0.1
+      - QBIT_PORT=8080
+      - QBIT_USERAME=admin
+      - QBIT_PASS=admin
+      - TELEGRAM_TOKEN=XXXXXXXXX:XXXXXXXXXXXXXX
+      - ADMINS=admin1,admin2
+    restart: unless-stopped
