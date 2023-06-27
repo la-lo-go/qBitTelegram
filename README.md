@@ -28,13 +28,14 @@
    
 ## Run the container with docker-compose
 
-| Variable Name    | Description                              |
-| ---------------- | ---------------------------------------- |
-| `QBIT_HOST`      | The host (IP) of the qBitTorrent server. |
-| `QBIT_PORT`      | The port of the qBitTorrent server.      |
-| `QBIT_USERAME`   | The username of the qBitTorrent server.  |
-| `QBIT_PASS`      | The password of the qBitTorrent server.  |
-| `TELEGRAM_TOKEN` | The token of the telegram bot.           |
+| Variable Name    | Description                                                 |
+| ---------------- | ----------------------------------------------------------- |
+| `QBIT_HOST`      | The host (IP) of the qBitTorrent server.                    |
+| `QBIT_PORT`      | The port of the qBitTorrent server.                         |
+| `QBIT_USERAME`   | The username of the qBitTorrent server.                     |
+| `QBIT_PASS`      | The password of the qBitTorrent server.                     |
+| `TELEGRAM_TOKEN` | The token of the telegram bot.                              |
+| `ADMINS`         | The telegram usernames of the admins (separeted by commas). |
 
 ### Using DockerHub image (recommended)
 ```bash
