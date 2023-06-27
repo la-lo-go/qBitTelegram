@@ -1,8 +1,8 @@
 name: Build and Push Docker Image to Docker Hub
 
-on: 
+on:
   push:
-    branches: [ main ]
+    branches: [ "master" ]
 
 jobs:
   build-and-push:
