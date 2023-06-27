@@ -24,32 +24,43 @@
 
 ## Prerequisites
 1. The telegram bot token ([here](https://core.telegram.org/bots#how-do-i-create-a-bot) is a tutorial)
-2. [Docker](https://www.docker.com/) installed and running on the server.
+2. [Docker](https://www.docker.com/) and [Docker compose](https://docs.docker.com/compose/install/) installed and running on the server.
+   
+## Run the container with docker-compose
 
-## Deploy
-### Clone the repository
+| Variable Name    | Description                              |
+| ---------------- | ---------------------------------------- |
+| `QBIT_HOST`      | The host (IP) of the qBitTorrent server. |
+| `QBIT_PORT`      | The port of the qBitTorrent server.      |
+| `QBIT_USERAME`   | The username of the qBitTorrent server.  |
+| `QBIT_PASS`      | The password of the qBitTorrent server.  |
+| `TELEGRAM_TOKEN` | The token of the telegram bot.           |
+
+### Using DockerHub image (recommended)
 ```bash
-git clone https://github.com/la-lo-go/qBitTelegram
-cd ./qBitTelegram/
+version: '3.8'
+services:
+  qbittelegram:
+    container_name: qBitTelegram
+    image: lalogo/qbittelegram:latest 
+    environment:
+      - QBIT_HOST=127.0.0.1
+      - QBIT_PORT=8080
+      - QBIT_USERAME=admin
+      - QBIT_PASS=admin
+      - TELEGRAM_TOKEN=XXXXXXXXX:XXXXXXXXXXXXXX
+      - ADMINS=admin1,admin2
+    restart: unless-stopped
 ```
 
-### Change the environment variables in the Dockerfile (Optional)
-You can change the env variables values now on the [Dockerfile](./Dockerfile) or change ir later when you run the container. 
-
-### Build the image
-```
-docker build -t qbittelegram .
-```
-
-### Run the container
-#### If you did not change the environment variables:
+### Cloning the repository
 ```bash
-docker run --name qBitTelegram -e QBIT_HOST="XXX.XXX.X.XXX" -e QBIT_PORT="XXXX" -e QBIT_USERAME="admin" -e QBIT_PASS="admin" -e TELEGRAM_TOKEN="XXXXX:XXXXX-XXXXXXXXXXX" -e ADMINS="username_admin1,username_admin2" qbittelegram
+git clone
+cd qBitTelegram
+docker-compose up -d
 ```
-#### If you changed the environment variables:
-```bash
-docker run --name qBitTelegram qbittelegram
-```
+
+
 
 ### Add the commands to menu
 1. Go to the [_BotFather_](https://t.me/botfather) chat.
