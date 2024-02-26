@@ -12,7 +12,8 @@ def add_handlers(bot):
     bot.add_handler(CommandHandler('torrents', client.show_all_torrents))
     bot.add_handler(CommandHandler('torrents_downloading', client.show_downloading_torrents))
     bot.add_handler(CommandHandler('categories', client.show_categories))
-    
+    bot.add_handler(CommandHandler('full_report', client.full_report))
+
     # CallbacksQueryHandlers Buttons
     bot.add_handler(CallbackQueryHandler(keyboard.button_torrent, pattern=r'^\[TORRENT\](.*)'))
     bot.add_handler(CallbackQueryHandler(keyboard.button_category, pattern=r'^\[CATEGORY\](.*)'))
@@ -29,23 +30,23 @@ def start_handlers():
     ]
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Sends a message with three inline buttons attached."""
-    keyboard = [
-        [
-            InlineKeyboardButton("Option 1", callback_data="GENERAL 1"),
-            InlineKeyboardButton("Option 2", callback_data="2"),
-        ],
-        [InlineKeyboardButton("Option 3", callback_data="3")],
-    ]
-
-    reply_markup = InlineKeyboardMarkup(keyboard)
+    ## Create a text explaining the bot
+    text = "Welcome to the QbitTelegram Bot!\n\n"
+    text += "You can use the following commands:\n"
+    text += "/torrents - Show all torrents\n"
+    text += "/torrents_downloading - Show downloading torrents\n"
+    text += "/categories - Show all categories\n"
+    text += "/full_report - Show full report of the status of the torrents\n"
 
     # print the username
     user = update.effective_user.username
     if not is_admin(user):
         kick(context, update.effective_chat.id)
         
-    await update.message.reply_text("Select an option:", reply_markup=reply_markup)
+    await context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=text
+    )
 
 async def manage_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message_text = update.message.text

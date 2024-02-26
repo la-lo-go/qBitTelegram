@@ -10,14 +10,17 @@
 ## Features
 - Torrents:
    - [X] Add torrent via magnet with a category.
+   - [ ] Send a notification when a torrent is added/downloaded.
    - [ ] Delete a torrent.
    - [ ] Resume.
 - Categories
    - [X] List all categories.
-   - [X] View all torrents.
-   - [X] View all downloading torrents.
    - [ ] Add a category.
    - [ ] Edit a category.
+- View:
+   - [X] View all torrents.
+   - [X] View all downloading torrents.
+   - [X] View all torrents with a full description of status, size, etc.
 - Search:
    - [ ] Search torrents with search plugings.
    - [ ] Download from search.

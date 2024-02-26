@@ -2,12 +2,13 @@ import os
 import re
 
 import qbittorrentapi
-from telegram import Update
+from telegram import Update, constants
 from telegram.ext import ContextTypes
 
 import keyboard
 from models.Message import Message
 from models.Torrent import Torrent
+from utils.State import append_emoji_to_state
 
 
 QBT_CLIENT = qbittorrentapi.Client(
@@ -61,6 +62,14 @@ async def show_categories(update: Update, download_torrent=False) -> None:
     
     await update.message.reply_text("Select a category:", reply_markup=reply_markup)
     
+async def full_report(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Show a full report of the status of the torrents"""
+    torrents_info = QBT_CLIENT.torrents_info(sort='added_on', reverse=True)
+    text = ""
+    for torrent in torrents_info:
+        text += format_torrent_full_report(torrent)
+    await update.message.reply_text(text, parse_mode=constants.ParseMode.HTML)
+    
 async def manage_magnet(update: Update) -> None:
     """
     Trigged when a new magnet link is received it updates the
@@ -95,5 +104,35 @@ def format_name(torrent, max_length=30) -> str:
     #TODO: add the status message with a emoji
     
     return f'{clean_name} - {porcentage}%'
+
+def format_torrent_full_report(torrent) -> str:
+    """Format the torrent info to show it in the full report""" 
+    progress = torrent["progress"]*100
+
+    torrent_report = '<b>'+format_name(torrent, 70)+'</b>'
+    torrent_report += f' - {append_emoji_to_state(torrent["state"])}'
+    torrent_report += f' - {progress}%'
+    
+    if progress != 100:
+        torrent_report += f' - Remaining: {seconds_to_human_readable(torrent["eta"])}'
+    
+    torrent_report += f' - Ratio: {torrent["ratio"]:.2f}\n\n'
+    
+    return torrent_report
+
+def seconds_to_human_readable(seconds) -> str:
+    """Convert seconds to human readable format"""
+    minutes, seconds = divmod(seconds, 60)
+    hours, minutes = divmod(minutes, 60)
+    days, hours = divmod(hours, 24)
+    
+    if days > 0:
+        return f'{days}d {hours}h {minutes}m {seconds}s'
+    elif hours > 0:
+        return f'{hours}h {minutes}m {seconds}s'
+    elif minutes > 0:
+        return f'{minutes}m {seconds}s'
+    else:
+        return f'{seconds}s'
 
     
